@@ -11,6 +11,7 @@ import {AutoFocusPlugin} from "@lexical/react/LexicalAutoFocusPlugin";
 import {ImageNode} from "../../feature/ImagesPlugin/nodes/ImageNode.tsx";
 import ImagesPlugin from "../../feature/ImagesPlugin/ImagesPlugin.ts";
 import {useSearchParams} from "react-router-dom";
+import * as postcssValueParser from "tailwindcss/src/value-parser";
 
 function Placeholder() {
     return <div className="editor-placeholder">Введите текст ...</div>;
@@ -27,82 +28,62 @@ const editorConfig = {
     nodes: [ImageNode]
 
 };
+interface IEditor {
+    initialState: string | null;
+    handleChange: (data: string) => void;
+}
 
+export const Editor: FC<IEditor> = ({initialState, handleChange}) => {
 
-export const Editor: FC = () => {
     const [isLoaded, setIsLoaded] = useState(false);
-    const [editorState, setEditorState] = useState<string | null>(null);
-    const [searchParams, setSearchParams] = useSearchParams();
-    const topic_id = searchParams.get('topic_id');
+
     useEffect(() => {
-
-        if(topic_id){
-            const state =   localStorage.getItem(topic_id);
-            setEditorState(state)
-            setIsLoaded(true)
-        }
-
-
-
-    }, []);
-
+        setIsLoaded(true)
+    }, [initialState]);
 
     const onChange = (editorState) => {
         const editorStateJSON = editorState.toJSON();
 
-        setEditorState(JSON.stringify(editorStateJSON));
+        handleChange(JSON.stringify(editorStateJSON));
     }
 
-    const handleSaveText = () => {
 
-        if (editorState && topic_id) {
-            localStorage.setItem(topic_id, editorState)
-        }
-
-
-    }
-    const handleClose = () => {
-        setSearchParams((params) => {
-            params.delete('topic_id')
-            return params
-        })
-    }
 
     return (
         <>
-            {isLoaded ?     <LexicalComposer initialConfig={{  ...editorConfig, editorState: editorState}} >
-                <div className="w-full border-slate-400 border-2 rounded">
-                    <ToolbarPlugin/>
+            {isLoaded ?
+            <LexicalComposer initialConfig={{...editorConfig, editorState: initialState}}>
+                <div className="w-full flex justify-center py-6 ">
+                    <div className={'w-1/3 flex flex-col bg-white rounded-2xl'}>
+                            <ToolbarPlugin/>
 
-                    <div className={'border-slate-400  border-t-2 relative'}>
-                        <RichTextPlugin
-                            contentEditable={<ContentEditable className="editor-input h-96 max-h-96 min-h-96 overflow-auto"/>}
-                            placeholder={<Placeholder/>}
-                            ErrorBoundary={LexicalErrorBoundary}
-                        />
 
-                        <AutoFocusPlugin/>
-                        <MyOnChangePlugin onChange={onChange}/>
-                        <ImagesPlugin/>
+                            <RichTextPlugin
+                                contentEditable={<ContentEditable
+                                    className="editor-input border-t-2-[#000000]"/>}
+                                placeholder={<Placeholder/>}
+                                ErrorBoundary={LexicalErrorBoundary}
+                            />
+
+                            <AutoFocusPlugin/>
+                            <MyOnChangePlugin onChange={onChange}/>
+                            <ImagesPlugin/>
+
                     </div>
 
-                    <div className={'border-slate-400 border-t-2 p-2 flex justify-between'}>
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-2xl"
-                                onClick={handleClose}>
-                            Назад
-                        </button>
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-2xl"
-                                onClick={handleSaveText}>
-                            Сохранить
-                        </button>
-                    </div>
+
+
 
 
                 </div>
 
 
-            </LexicalComposer> : <div>Loading...</div>}
+            </LexicalComposer> : <div>Loading ...</div>}
         </>
+
+
+
+
 
     );
 }
@@ -115,4 +96,50 @@ function MyOnChangePlugin({onChange}) {
         });
     }, [editor, onChange]);
     return null;
+}
+
+
+export const View = () => {
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [editorState, setEditorState] = useState<string | null>(null);
+    const [searchParams, _] = useSearchParams();
+    const topic_id = searchParams.get('topic_id');
+    useEffect(() => {
+
+        if (topic_id) {
+            const state = localStorage.getItem(topic_id);
+            setEditorState(state)
+            setIsLoaded(true)
+        }
+
+
+    }, []);
+
+    return (
+        <>
+            {isLoaded ?
+            <LexicalComposer initialConfig={{...editorConfig, editorState: editorState, editable: false}}>
+                <div className="w-full flex justify-center py-6">
+
+
+                    <RichTextPlugin
+                        contentEditable={<ContentEditable className={'editor-input w-1/3 bg-white rounded-2xl p-5'}
+                        />}       placeholder={(isEditable) => isEditable ? <Placeholder/> : null}
+                        ErrorBoundary={LexicalErrorBoundary}
+                    />
+
+                    <AutoFocusPlugin/>
+                    <ImagesPlugin/>
+
+                </div>
+
+
+            </LexicalComposer>
+            : <div>Loading ...</div>
+        }
+        </>
+
+
+    )
+
 }

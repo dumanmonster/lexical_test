@@ -1,1 +1,1 @@
-export {Editor} from './Editor.tsx'
+export {Editor, View} from './Editor.tsx'

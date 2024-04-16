@@ -15,6 +15,8 @@ export const Carousel = ({ images, autoSlide = false, autoSlideInterval = 3000 }
         }
         setSlides(pairs)
     }, [images]);
+
+
     useEffect(() => {
         console.log(slides)
     }, [slides]);
@@ -37,28 +39,7 @@ export const Carousel = ({ images, autoSlide = false, autoSlideInterval = 3000 }
 
     return (
         <div className="relative overflow-hidden">
-            <div className="flex transition-transform ease-out duration-500" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-                {slides?.map((slide, index) => (
-                    <div key={index} className="w-full h-full flex-shrink-0 flex justify-evenly ">
-                        <div className="w-1/3  overflow-hidden aspect-square">
-                            <img src={slide?.[0]?.src} alt={`Slide ${index + 1}`} className="object-cover w-full h-full" />
-                        </div>
-                        <div className="w-1/3  overflow-hidden aspect-square">
-                            {slide?.[1] && <img src={slide?.[1]?.src} alt={`Slide ${index + 1}`} className="object-cover w-full h-full" />}
-                        </div>
-                    </div>
-                ))}
-            </div>
-            {slides?.length > 1 && (
-                <div className="absolute inset-0 flex items-center justify-between p-4 pointer-events-none">
-                    <button onClick={prev} className="pointer-events-auto p-2 rounded-full shadow bg-white/80 text-gray-800 hover:bg-white">
-                        <ChevronLeft />
-                    </button>
-                    <button onClick={next} className="pointer-events-auto p-2 rounded-full shadow bg-white/80 text-gray-800 hover:bg-white">
-                        <ChevronRight />
-                    </button>
-                </div>
-            )}
+
         </div>
     );
 };

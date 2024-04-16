@@ -29,7 +29,7 @@ function Divider() {
     return <div className="divider" />;
 }
 export function FillURL() {
-    const srcfile = prompt("Enter the URL of the image:", "");
+    const srcfile = prompt("Введите ссылку на изображения", "");
 
     return srcfile;
 }
@@ -94,7 +94,7 @@ export  function ToolbarPlugin() {
     }, [editor, updateToolbar]);
 
     return (
-        <div className="toolbar" ref={toolbarRef}>
+        <div className="toolbar " ref={toolbarRef}>
             <button
                 disabled={!canUndo}
                 onClick={() => {

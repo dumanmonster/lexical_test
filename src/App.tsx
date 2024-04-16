@@ -1,6 +1,6 @@
 import './App.css'
 import {mockData} from "./constants";
-import {Item} from "./feature/Item";
+import {FullItem, Item} from "./feature/Item";
 import {useLocation, useSearchParams} from "react-router-dom";
 import {Editor} from "./widgets";
 import {data} from "autoprefixer";
@@ -13,8 +13,8 @@ function App() {
 
 
     return (
-        <div className={'contain-content py-2 w-full flex justify-center h-full'} >
-            <div className={'flex flex-col gap-8 w-1/3 overflow-auto h-full'}>
+        <div className={'contain-content  w-full flex justify-center h-full bg-[#e8f1f3]'} >
+            <div className={'flex flex-col gap-8 w-1/3 overflow-auto h-full py-2'}>
                 {mockData?.map((item) => {
 
                     return (<Item data={item} key={item.id}/>)
@@ -22,11 +22,8 @@ function App() {
                 </div>
 
             {!!topic_id?.length && (
-                <div className={'w-full absolute z-20  h-full bg-white flex justify-center align-middle'} >
-
-                    <div className={'w-1/2 h-64'}>
-                        <Editor />
-                    </div>
+                <div className={'w-full absolute z-20  h-full bg-[#e8f1f3] flex flex-col overflow-auto'} >
+                    <FullItem />
                 </div>
             )}
         </div>
